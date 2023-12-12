@@ -2,6 +2,7 @@ import 'package:custom_navigation_bar/custom_navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shoemerce/utils/constants.dart';
+import 'package:shoemerce/view/view.dart';
 
 class MainNavigator extends StatefulWidget {
   const MainNavigator({super.key});
@@ -12,12 +13,11 @@ class MainNavigator extends StatefulWidget {
 
 class _MainNavigatorState extends State<MainNavigator> {
   PageController _pageController = PageController();
-  int _selectedIndex = 0;
+  int _selectedIndex = 0; //for onItemTapped
 
+  // for screens or page
   List<Widget> _screens = [
-    Container(
-      color: const Color.fromARGB(255, 227, 48, 35),
-    ),
+    HomeView(),
     Container(
       color: const Color.fromARGB(255, 244, 231, 54),
     ),
@@ -30,7 +30,18 @@ class _MainNavigatorState extends State<MainNavigator> {
     setState(() {
       _selectedIndex = index;
     });
-    _pageController.jumpToPage(_selectedIndex);
+    // _pageController.jumpToPage(_selectedIndex);
+
+    // change screens using smooth animations
+    _pageController.animateToPage(_selectedIndex,
+        duration: Duration(milliseconds: 300), curve: Curves.linear);
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _pageController.dispose();
+    super.dispose();
   }
 
   @override
@@ -39,15 +50,16 @@ class _MainNavigatorState extends State<MainNavigator> {
       body: PageView(
         controller: _pageController,
         children: _screens,
-        physics: NeverScrollableScrollPhysics(),
+        physics:
+            NeverScrollableScrollPhysics(), //this to make page unscrollable
       ),
       bottomNavigationBar: CustomNavigationBar(
           currentIndex: _selectedIndex,
           onTap: _onItemTapped,
-          iconSize: 40,
-          bubbleCurve: Curves.linear,
+          iconSize: 30,
+          bubbleCurve: Curves.bounceIn,
           selectedColor: ConstantsColor.materialColor,
-          unSelectedColor: Color.fromARGB(255, 22, 102, 178),
+          unSelectedColor: Color.fromARGB(255, 195, 221, 246),
           strokeColor: ConstantsColor.materialColor,
           scaleFactor: 0.5,
           backgroundColor: Color.fromARGB(255, 9, 5, 0),
